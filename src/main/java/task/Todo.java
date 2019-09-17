@@ -21,6 +21,10 @@ public class Todo extends Task implements Serializable {
         this.to = to;
     }
 
+    public Date getFrom() {
+        return this.from;
+    }
+
     /**
      * This override of the toString function of the task class etches the different portions of the user input into a
      * single string.
