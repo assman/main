@@ -9,6 +9,8 @@ import task.TaskList;
 import task.Todo;
 import ui.Ui;
 
+import java.util.Date;
+
 /**
  * The AddCommand class is used when the user has input a command which requires a task to be added to the TaskList
  *
@@ -20,6 +22,7 @@ public class AddCommand extends Command {
     private String command;
     private String taskFeatures;
     private String formattedDateTime;
+    private Date from, to;
 
     /**
      * This AddCommand function is used to assign the different parameters required when adding a task.
@@ -34,6 +37,13 @@ public class AddCommand extends Command {
         this.formattedDateTime = formattedDateTime;
     }
 
+    public AddCommand(String command, String taskFeatures, Date from, Date to) {
+        this.command = command;
+        this.taskFeatures = taskFeatures;
+        this.from = from;
+        this.to = to;
+    }
+
     /**
      * This execute function is used to add the respective tasks to the TaskList and save to persistent storage.
      *
@@ -46,7 +56,7 @@ public class AddCommand extends Command {
         Task task;
         switch (command) {
         case "todo":
-            task = new Todo(taskFeatures);
+            task = new Todo(taskFeatures, from, to);
             break;
         case "deadline":
             task = new Deadline(taskFeatures, formattedDateTime);

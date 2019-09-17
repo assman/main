@@ -19,3 +19,4 @@ ArrayList
 .project
 .settings/
 .classpath
+.vscode/

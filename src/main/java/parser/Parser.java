@@ -4,6 +4,8 @@ import exception.DukeException;
 import ui.Ui;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;  
+import java.util.Date;
 
 /**
  * The parser class is used to parse and make sense of the different queries the user inputs into the program and tag
@@ -18,12 +20,16 @@ public class Parser {
     /**
      * Parses the user input of string type and returns the respective command type
      *
-     * @param userInput This string is provided by the user to ask 'Duke' to perform a particular action
-     * @return Command After processing the user's input it returns the correct command for further processing
-     * @throws DukeException The DukeException class has all the respective methods and messages!
+     * @param userInput This string is provided by the user to ask 'Duke' to perform
+     *                  a particular action
+     * @return Command After processing the user's input it returns the correct
+     *         command for further processing
+     * @throws DukeException  The DukeException class has all the respective methods
+     *                        and messages!
+     * @throws ParseException
      *
      */
-    public static Command parse(String userInput) throws DukeException {
+    public static Command parse(String userInput) throws DukeException, ParseException {
 
         String command = userInput.split("\\s+", 2)[0].trim();
         String taskFeatures;
@@ -41,8 +47,22 @@ public class Parser {
                 }
                 if (taskFeatures.isEmpty()) {
                     throw new DukeException(DukeException.EMPTY_USER_DESCRIPTION());
-                } else {
-                    return new AddCommand(command, taskFeatures, null);
+                } 
+                else {
+                    checkType = "/between";
+                    String dateTimeFromUser;
+                    String taskDescription = taskFeatures.split(checkType, 2)[0].trim();
+                    try {
+                        dateTimeFromUser = taskFeatures.split(checkType, 2)[1].trim();
+                    }catch (ArrayIndexOutOfBoundsException e)
+                    {
+                        return new AddCommand(command, taskDescription, null);
+                    }
+                    String fromDate = dateTimeFromUser.split("\\s", 2)[0].trim();
+                    String toDate = dateTimeFromUser.split("\\s", 2)[1].trim();
+                    Date from = new SimpleDateFormat("dd/MM/yyyy").parse(fromDate);
+                    Date to = new SimpleDateFormat("dd/MM/yyyy").parse(toDate);
+                    return new AddCommand(command, taskDescription, from, to);
                 }
             case "deadline":
                 //fall through

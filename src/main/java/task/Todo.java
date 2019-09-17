@@ -1,5 +1,6 @@
 package task;
-import java.io.Serializable;
+import java.io.Serializable;  
+import java.util.Date;
 /**
  * This extension of the task class will allow the user to add a task of to-do type.
  *
@@ -7,9 +8,17 @@ import java.io.Serializable;
  * @version v2.0
  */
 public class Todo extends Task implements Serializable {
+    protected Date from;
+    protected Date to;
 
     public Todo(String description){
         super(description);
+    }
+
+    public Todo(String description, Date from, Date to){
+        super(description);
+        this.from = from;
+        this.to = to;
     }
 
     /**
@@ -20,6 +29,12 @@ public class Todo extends Task implements Serializable {
      */
     @Override
     public String toString() {
-        return "[T]" + "[" + super.getStatusIcon() + "] " + this.description;
+        if(this.from != null && this.to != null){
+            return "[T]" + "[" + super.getStatusIcon() + "] " + this.description + " " + " (from: " + from.toString() + ")" + " (to: " + to.toString() + ")";
+        }
+        else {
+            return "[T]" + "[" + super.getStatusIcon() + "] " + this.description;
+        }
+        
     }
 }
