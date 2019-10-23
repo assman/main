@@ -1,6 +1,5 @@
 import java.io.IOException;
 
-import exception.DukeException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -17,7 +16,7 @@ public class Main extends Application {
      * along with the and finally the stage is shown.
      */
     @Override
-    public void start(Stage stage) throws DukeException {
+    public void start(Stage stage) {
         try {
             MainWindow.initializeDukeElements();
             FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/view/MainWindow.fxml"));
@@ -25,6 +24,7 @@ public class Main extends Application {
             Scene scene = new Scene(ap);
             stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/GuiLogo.png")));
             stage.setScene(scene);
+            stage.setResizable(false);
             stage.setTitle("Chronologer");
             stage.show();
         } catch (IOException e) {

@@ -1,6 +1,5 @@
 package task;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -26,10 +25,30 @@ public class TaskList {
      * @param task contains the task that needs to be added.
      */
     public static final Comparator<Task> DateComparator = (firstDate, secondDate) -> {
+        if (firstDate.startDate == null && secondDate != null) {
+            return -1;
+        } else if (firstDate.startDate != null && secondDate.startDate == null) {
+            return 1;
+        }
         if (firstDate.startDate.isBefore(secondDate.startDate)) {
             return -1;
         } else {
             return 1;
+        }
+    };
+
+    /**
+     * This custom comparator allows the sorting of both deadlines and events.
+     *
+     * @param task contains the task that needs to be added.
+     */
+    public static final Comparator<Task> PriorityComparator = (firstPriority, secondPriority) -> {
+        if (firstPriority.priority.equals(Priority.HIGH) && secondPriority.priority.equals(Priority.MEDIUM)) {
+            return -1;
+        } else if (firstPriority.priority.equals(Priority.MEDIUM) && secondPriority.priority.equals(Priority.MEDIUM)) {
+            return 1;
+        } else {
+            return 0;
         }
     };
 
@@ -122,6 +141,22 @@ public class TaskList {
         return task;
     }
 
+    /**
+     * This function allows the user to adda location to tasks.
+     *
+     * @param taskWithLocation is of String type which contains the desired date of
+     *                  schedule.
+     * @return sortDateList the sorted schedule of all the tasks on a particular date.
+     */
+    public Task addLocation(Integer indexOfTask, String taskWithLocation) {
+        Task taskHasLocation = listOfTasks.get(indexOfTask);
+        taskHasLocation.hasLocation = true;
+        taskHasLocation.comment += ("Location of the task is " + taskWithLocation);
+        // This is to later encompass further key information such as eg. exam is at location
+        // taskHasLocation.comment += (" the" + taskHasLocation.getClass().toString()
+        // .replace("class task.", " ") + " task is at " + taskWithLocation);
+        return taskHasLocation;
+    }
 
     /**
      * This function allows the user to obtain the tasks on a particular date.
@@ -133,13 +168,49 @@ public class TaskList {
     public ArrayList<Task> schedule(String dayToFind) {
         ArrayList<Task> sortedDateList = new ArrayList<Task>();
         for (int i = 0; i < listOfTasks.size(); i++) {
-            if (!(listOfTasks.get(i).getClass() == task.Todo.class)
-                && listOfTasks.get(i).toString().contains(dayToFind)) {
+            if (listOfTasks.get(i).toString().contains(dayToFind)) {
                 sortedDateList.add(listOfTasks.get(i));
             }
         }
         Collections.sort(sortedDateList, DateComparator);
         return sortedDateList;
+    }
+
+    /**
+     * This function allows the user to obtain the tasks on a particular date sorted by priority.
+     *
+     * @param dayToFind is of String type which contains the desired date of
+     *                  schedule.
+     * @return priorityList the tasks of the given day sorted by priority
+     */
+    public ArrayList<Task> obtainPriorityList(String dayToFind) {
+        ArrayList<Task> priorityList = new ArrayList<Task>();
+        for (int i = 0; i < listOfTasks.size(); i++) {
+            if (listOfTasks.get(i).toString().contains(dayToFind) && !listOfTasks.get(i).priority.equals(Priority.LOW)
+                && !listOfTasks.get(i).priority.equals(Priority.INVALID)) {
+                priorityList.add(listOfTasks.get(i));
+            }
+        }
+        Collections.sort(priorityList, PriorityComparator);
+        return priorityList;
+    }
+
+    /**
+     * This function allows the user to obtain the tasks on a particular date, but only with description.
+     *
+     * @param dayToFind is of String type which contains the desired date of
+     *                  schedule.
+     * @return sortDateList which contains only the descriptions of the tasks.
+     */
+    public ArrayList<String> scheduleForDay(String dayToFind) {
+        ArrayList<Task> obtainDescriptions = schedule(dayToFind);
+        ArrayList<String> scheduleDescriptionOnly = new ArrayList<>();
+        for (int i = 0; i < obtainDescriptions.size(); i++) {
+            if (obtainDescriptions.get(i).toString().contains(dayToFind)) {
+                scheduleDescriptionOnly.add(obtainDescriptions.get(i).description.split("\\d+",2)[0].trim());
+            }
+        }
+        return scheduleDescriptionOnly;
     }
 
     /**
@@ -167,7 +238,6 @@ public class TaskList {
         taskToBeEdited.comment = comment;
         return taskToBeEdited;
     }
-
 
     public ArrayList<Task> getTasks() {
         return listOfTasks;
