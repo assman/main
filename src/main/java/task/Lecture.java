@@ -24,7 +24,6 @@ public class Lecture extends Event {
      */
     @Override
     public String toString() {
-
         return "[LEC]" + "[" + super.getStatusIcon() + "]" + this.description + "(at: "
                 + this.startDate.format(DateTimeExtractor.DATE_FORMATTER) + "-"
                 + this.endDate.format(DateTimeExtractor.DATE_FORMATTER) + ")";
